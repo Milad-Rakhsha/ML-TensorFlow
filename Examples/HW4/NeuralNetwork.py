@@ -17,8 +17,8 @@ total_train_set=train_x.shape[0]
 m=total_train_set;
 print('number of training set:',m)
 
-learning_rate = 0.025
-num_steps = 150
+learning_rate = 0.002
+num_steps = 550
 display_step = 50
 
 # Network Parameters
@@ -50,7 +50,8 @@ def neural_net(x):
     theta1_reg_term =tf.matmul(x, weights['h1'])
     # Output fully connected layer with a neuron for each class
     out_layer = tf.matmul(layer_1, weights['out']) + biases['out']
-    a_3=tf.nn.sigmoid(out_layer)
+    # a_3=tf.nn.sigmoid(out_layer)
+    a_3=tf.nn.softmax(out_layer)
     theta2_reg_term =tf.matmul(layer_1, weights['out'])
     return a_3,theta1_reg_term,theta2_reg_term
 
@@ -60,12 +61,13 @@ a_out,theta1_reg_term,theta2_reg_term = neural_net(X)
 
 ## Note that the original cost function introduced in the lectures is kind of not well behaved and needs
 ## some advanced optimization technique, for this reason we are not going to use this 
-# loss_op = -tf.reduce_sum(tf.reduce_sum(Y*tf.log(a_out)+ (1-Y)*tf.log(1-a_out)))/m \
-#             +tf.reduce_sum(tf.reduce_sum(theta1_reg_term*theta1_reg_term))*lambda_reg/(2.0*m) \
-#             +tf.reduce_sum(tf.reduce_sum(theta2_reg_term*theta2_reg_term))*lambda_reg/(2.0*m)
+loss_op = -tf.reduce_sum(tf.reduce_sum(Y*tf.log(a_out)))\
+            +tf.reduce_sum(tf.reduce_sum(theta1_reg_term*theta1_reg_term))*lambda_reg/(2.0*m) \
+            +tf.reduce_sum(tf.reduce_sum(theta2_reg_term*theta2_reg_term))*lambda_reg/(2.0*m)
+            # + (1-Y)*tf.log(1-a_out)))/m \
 
-## Instead, we are using the softmax_cross_entropy_with_logits 
-loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=a_out, labels=Y))
+## Instead, we are using the softmax_cross_entropy_with_logits  
+# loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=a_out, labels=Y))
 
 
 
