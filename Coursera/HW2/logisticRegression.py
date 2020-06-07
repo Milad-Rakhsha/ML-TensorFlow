@@ -44,19 +44,19 @@ with tf.Session() as sess:
     # Fit all training data
     mcost=sess.run(cost,feed_dict={X: train_X, Y:train_Y})
     mW=sess.run(W)
-    print '\n" Initial cost is :',mcost, '\nInitial W:\n',DataFrame(mW), '\nInitial b:\n',sess.run(b) 
+    print ('\n" Initial cost is :',mcost, '\nInitial W:\n',DataFrame(mW), '\nInitial b:\n',sess.run(b))
 
     for epoch in range(training_epochs):        
         _,c=sess.run([optimizer,cost],feed_dict={X: train_X, Y:train_Y})
 
         #Display logs per epoch step
         if (epoch+1) % display_step == 0:
-            print "Iteration:", '%04d' % (epoch+1), ", cost=",c[0]
+            print ("Iteration:", '%04d' % (epoch+1), ", cost=",c[0])
 
 
-    print "Optimization Finished!"
+    print ("Optimization Finished!")
     training_cost = sess.run(cost, feed_dict={X: train_X, Y: train_Y})
-    print "Training cost=", training_cost[0], "\nW=\n", DataFrame(sess.run(W)), "\nb=\n", sess.run(b), '\n'
+    print ("Training cost=", training_cost[0], "\nW=\n", DataFrame(sess.run(W)), "\nb=\n", sess.run(b), '\n')
 
 
     # Only need 2 points to define a line, so choose two endpoints

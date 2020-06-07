@@ -5,6 +5,9 @@ import scipy
 # from pandas import *
 import pandas as pd
 
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+
 data_x = np.loadtxt("X.txt")
 data_y = np.loadtxt("y.txt")%10
 
@@ -18,7 +21,7 @@ m=total_train_set;
 print('number of training set:',m)
 
 learning_rate = 0.002
-num_steps = 550
+num_steps = 300
 display_step = 50
 
 # Network Parameters
@@ -60,13 +63,13 @@ def neural_net(x):
 a_out,theta1_reg_term,theta2_reg_term = neural_net(X)
 
 ## Note that the original cost function introduced in the lectures is kind of not well behaved and needs
-## some advanced optimization technique, for this reason we are not going to use this 
-loss_op = -tf.reduce_sum(tf.reduce_sum(Y*tf.log(a_out)))\
+## some advanced optimization technique, for this reason we are not going to use that
+loss_op = -tf.reduce_sum(tf.reduce_sum(Y*tf.log(a_out))\
+            + (1-Y)*tf.log(1-a_out))/m \
             +tf.reduce_sum(tf.reduce_sum(theta1_reg_term*theta1_reg_term))*lambda_reg/(2.0*m) \
             +tf.reduce_sum(tf.reduce_sum(theta2_reg_term*theta2_reg_term))*lambda_reg/(2.0*m)
-            # + (1-Y)*tf.log(1-a_out)))/m \
 
-## Instead, we are using the softmax_cross_entropy_with_logits  
+## Instead, we are using the softmax_cross_entropy_with_logits
 # loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=a_out, labels=Y))
 
 
@@ -114,15 +117,14 @@ with tf.Session() as sess:
 
     from random import *
     while True:
-        n = raw_input("\nDo you want to try more (Y/n):")
+        n = input("\nDo you want to try more (Y/n):")
         if n.strip() == 'n':
             break
         else:
             r=randint(1, len(test_x))
-            x=np.reshape(test_x[r,:],(20,20),1)
+            x=np.reshape(test_x[r,:],(20,20))
             from matplotlib import pyplot as plt
             plt.imshow(x, interpolation='nearest')
             plt.show()
             pred=sess.run(tf.argmax(a_out,1),feed_dict={X: test_x[r,:].reshape(1,400)})
-            print 'NN prediction for this image: ', pred[0]
-
+            print ('NN prediction for this image: ', pred[0])
